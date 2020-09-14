@@ -1,11 +1,11 @@
-package cn.ekgc.ewm.util;
+package cn.ekgc.itrip.util;
 
 import java.security.MessageDigest;
 
 /**
  * <b>MD5 字符串加密工具类</b>
- * @author Arthur
- * @version 1.0.0 2020-07-08
+ * @author wyh
+ * @version 1.0.0 2020-09-13
  * @since 1.0.0
  */
 public class MD5Util {

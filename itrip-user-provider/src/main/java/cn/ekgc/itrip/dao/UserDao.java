@@ -21,4 +21,20 @@ public interface UserDao {
 	 * @throws Exception
 	 */
 	List<User> findListByQuery(User query) throws Exception;
+
+	/**
+	 * <b>保存用户对象</b>
+	 * @param entity
+	 * @return
+	 * @throws Exception
+	 */
+	Integer save(User entity) throws Exception;
+
+	/**
+	 * <b>修改信息</b>
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	Integer update(User user) throws Exception;
 }
