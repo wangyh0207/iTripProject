@@ -2,8 +2,12 @@ package cn.ekgc.itrip.service.impl;
 
 import cn.ekgc.itrip.dao.UserDao;
 import cn.ekgc.itrip.pojo.entity.User;
+import cn.ekgc.itrip.pojo.enums.ActivatedEnum;
 import cn.ekgc.itrip.service.UserService;
 import cn.ekgc.itrip.util.CDKUtil;
+import cn.ekgc.itrip.util.ConstantUtils;
+import cn.ekgc.itrip.util.EmailUtil;
+import cn.ekgc.itrip.util.SmsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,10 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 	@Autowired
 	private StringRedisTemplate redisTemplate;
+	@Autowired
+	private EmailUtil emailUtil;
+	@Autowired
+	private SmsUtil smsUtil;
 
 	/**
 	 * <b>根据用户名校验该用户名是否被使用</b>
@@ -58,6 +66,20 @@ public class UserServiceImpl implements UserService {
 		if (count > 0) {
 			// 产生随机激活码
 			String cdk = CDKUtil.generate();
+			// 判断用户此时使用的是邮箱还是手机号码
+			if (user.getUserCode().indexOf("@") > -1) {
+				// 此时使用的是邮箱地址
+				// 发送邮件
+				String context = "<div style='width: 600px; margin: 0 auto;'>" +
+						"<h3>尊敬的:<strong>"+ user.getUserCode() +"</h3>" +
+						"<p>您已经成功注册成为<strong>爱旅行</strong>会员！</p>" +
+						"<p>只剩下最后一步，激活您的账号，您的激活码是:<strong style='color: red;'>" + cdk + "</strong></p>" +
+						"<p>请在<strong>" + ConstantUtils.MAIL_EXPIRE + "</strong>分钟之内进行账号激活！</p></div>";
+				emailUtil.sendMail(user.getUserCode(), "爱旅行用户激活", context);
+			} else {
+				// 使用的是手机号码
+				smsUtil.sendActivationCodeCloopen(user.getUserCode(), cdk);
+			}
 			// 将激活码存储于 Redis 中，使用 userCode 作为 key
 			redisTemplate.opsForValue().set(user.getUserCode(), cdk);
 			// 设定过期时间
@@ -65,6 +87,33 @@ public class UserServiceImpl implements UserService {
 			// 将激活码发送到邮箱
 			System.out.println(cdk);
 			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * <b>使用激活码激活用户</b>
+	 * @param userCode
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public boolean activateUser(String userCode, String code) throws Exception {
+		// 通过使用 userCode 作为 key 从 redis 中查询用户信息
+		String cdk = redisTemplate.opsForValue().get(userCode);
+		if (cdk != null) {
+			// 找到对应的激活码，和用户提交的信息进行比较
+			if (cdk.equals(code)) {
+				// 查询此时的用户对象
+				User query = new User();
+				query.setUserCode(userCode);
+				User user = userDao.findListByQuery(query).get(0);
+				// 设定为激活状态
+				user.setActivated(ActivatedEnum.ACTIVATED_TRUE.getCode());
+				userDao.update(user);
+				return true;
+			}
 		}
 		return false;
 	}

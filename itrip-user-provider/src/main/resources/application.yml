@@ -6,4 +6,4 @@ spring:
   application:
     name: itrip-user-provider
   profiles:
-    active: eureka-client, data
+    active: eureka-client, data, mail
