@@ -1,6 +1,0 @@
-### 邮件发送信息配置
-spring:
-   mail:
-     host: smtp.163.com
-     username: auth_wangyh@163.com
-     password: RSNHLUYLGZXMLJTZ
