@@ -30,6 +30,7 @@
 				<if test="QQ != null">QQ=#{QQ} and </if>
 				<if test="weibo != null">weibo=#{weibo} and </if>
 				<if test="baidu != null">baidu=#{baidu} and </if>
+				<if test="userPassword != null">userPassword=#{userPassword} and </if>
 			</trim>
 		</where>
 	</select>

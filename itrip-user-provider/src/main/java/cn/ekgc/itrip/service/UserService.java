@@ -25,4 +25,22 @@ public interface UserService {
 	 * @throws Exception
 	 */
 	boolean saveUser(User user) throws Exception;
+
+	/**
+	 * <b>使用激活码激活用户</b>
+	 * @param userCode
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	boolean activateUser(String userCode, String code) throws Exception;
+
+	/**
+	 * <b>用户登陆</b>
+	 * @param userCode
+	 * @param password
+	 * @return
+	 * @throws Exception
+	 */
+	User queryUserForLogin(String userCode, String password) throws Exception;
 }

@@ -41,4 +41,31 @@ public class UserTransportImpl implements UserTransport {
 	public boolean saveUser(@RequestBody User user) throws Exception {
 		return userService.saveUser(user);
 	}
+
+
+	/**
+	 * <b>使用激活码激活用户</b>
+	 * @param userCode
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/activate")
+	@Override
+	public boolean activateUser(@RequestParam String userCode, @RequestParam String code) throws Exception {
+		return userService.activateUser(userCode, code);
+	}
+
+	/**
+	 * <b>用户登陆</b>
+	 * @param userCode
+	 * @param password
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/dologin")
+	@Override
+	public User queryUserForLogin(@RequestParam String userCode, @RequestParam String password) throws Exception {
+		return userService.queryUserForLogin(userCode, password);
+	}
 }
