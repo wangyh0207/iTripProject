@@ -53,7 +53,7 @@ public class UserTransportImpl implements UserTransport {
 	 */
 	@PostMapping("/activate")
 	@Override
-	public boolean activateUser(@RequestParam String userCode, @RequestParam String code) throws Exception {
+	public ResultVO activateUser(@RequestParam String userCode, @RequestParam String code) throws Exception {
 		return userService.activateUser(userCode, code);
 	}
 
@@ -80,5 +80,16 @@ public class UserTransportImpl implements UserTransport {
 	@Override
 	public ResultVO loginUser(@RequestParam String userCode, @RequestParam String password) throws Exception {
 		return userService.loginUser(userCode, password);
+	}
+
+	/**
+	 * <b>退出登陆</b>
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/logout")
+	@Override
+	public ResultVO logoutUser(@RequestParam String token) throws Exception {
+		return userService.logoutUser(token);
 	}
 }

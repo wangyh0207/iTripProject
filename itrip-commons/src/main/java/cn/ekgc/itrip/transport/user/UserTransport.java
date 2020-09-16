@@ -43,7 +43,7 @@ public interface UserTransport {
 	 * @throws Exception
 	 */
 	@PostMapping("/activate")
-	boolean activateUser(@RequestParam String userCode, @RequestParam String code) throws Exception;
+	ResultVO activateUser(@RequestParam String userCode, @RequestParam String code) throws Exception;
 
 	/**
 	 * <b>使用 token 查找当前登陆用户</b>
@@ -63,4 +63,12 @@ public interface UserTransport {
 	 */
 	@PostMapping("/login")
 	ResultVO loginUser(@RequestParam String userCode, @RequestParam String password) throws Exception;
+
+	/**
+	 * <b>退出登陆</b>
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/logout")
+	ResultVO logoutUser(@RequestParam String token) throws Exception;
 }

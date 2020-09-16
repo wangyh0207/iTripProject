@@ -52,4 +52,13 @@ public class RedisUtil {
 		}
 		return null;
 	}
+
+	/**
+	 * <b>将 token 从 redis 中删除</b>
+	 * @param token
+	 * @throws Exception
+	 */
+	public void deleteFromRedis(String token) throws Exception {
+		redisTemplate.delete(token);
+	}
 }

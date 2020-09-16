@@ -125,11 +125,12 @@ public class AuthController extends BaseController {
 	@PutMapping("/activate")
 	public ResultVO activateUserByEmail(String user, String code) throws Exception {
 		if (ValidateUtil.checkEmail(user) && code != null && !"".equals(code)) {
-			// 通过使用用户信息和激活码进行激活
-			if (userTransport.activateUser(user, code)) {
-				return ResultVO.success();
+			if (!userTransport.queryUserCodeIsCanUsed(user)) {
+				// 用户存在
+				// 通过使用用户信息和激活码进行激活
+				return userTransport.activateUser(user, code);
 			}
-			return ResultVO.failure("激活失败");
+			return ResultVO.failure("当前用户未注册，请先注册");
 		}
 		return ResultVO.failure("请填写正确的激活信息");
 	}
@@ -142,11 +143,12 @@ public class AuthController extends BaseController {
 	@PutMapping("/validatephone")
 	public ResultVO activateUserByCellphone(String user, String code) throws Exception {
 		if (ValidateUtil.checkCellphone(user) && code != null && !"".equals(code)) {
-			// 通过使用用户信息和激活码进行激活
-			if (userTransport.activateUser(user, code)) {
-				return ResultVO.success();
+			if (!userTransport.queryUserCodeIsCanUsed(user)) {
+				// 用户存在
+				// 通过使用用户信息和激活码进行激活
+				return userTransport.activateUser(user, code);
 			}
-			return ResultVO.failure("激活失败");
+			return ResultVO.failure("当前用户未注册，请先注册");
 		}
 		return ResultVO.failure("请填写正确的激活信息");
 	}
@@ -168,5 +170,16 @@ public class AuthController extends BaseController {
 		}
 		// 信息无效
 		return ResultVO.failure("请填写有效的登陆信息");
+	}
+
+	/**
+	 * <b>退出登陆</b>
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/logout")
+	public ResultVO logout() throws Exception {
+		String token = request.getHeader("token");
+		return userTransport.logoutUser(token);
 	}
 }

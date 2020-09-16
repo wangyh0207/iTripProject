@@ -7,14 +7,13 @@ import cn.ekgc.itrip.pojo.enums.ActivatedEnum;
 import cn.ekgc.itrip.service.UserService;
 import cn.ekgc.itrip.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <b>爱旅行-用户模块业务层接口实现类</b>
@@ -82,7 +81,6 @@ public class UserServiceImpl implements UserService {
 			}
 			// 将激活码存储于 Redis 中，使用 userCode 作为 key
 			redisUtil.saveToRedis(user.getUserCode(), cdk, ConstantUtils.MAIL_EXPIRE);
-			// 将激活码发送到邮箱
 			System.out.println(cdk);
 			return true;
 		}
@@ -98,7 +96,7 @@ public class UserServiceImpl implements UserService {
 	 * @throws Exception
 	 */
 	@Override
-	public boolean activateUser(String userCode, String code) throws Exception {
+	public ResultVO activateUser(String userCode, String code) throws Exception {
 		// 通过使用 userCode 作为 key 从 redis 中查询用户信息
 		String cdk = (String) redisUtil.getFromRedis(userCode, String.class);
 		if (cdk != null) {
@@ -110,11 +108,34 @@ public class UserServiceImpl implements UserService {
 				User user = userDao.findListByQuery(query).get(0);
 				// 设定为激活状态
 				user.setActivated(ActivatedEnum.ACTIVATED_TRUE.getCode());
+				user.setModifyDate(new Date());
 				userDao.update(user);
-				return true;
+				return ResultVO.success();
 			}
+			return ResultVO.failure("验证码错误");
+		} else {
+			// 激活码过期
+			// 产生随机激活码
+			String reCDK = CDKUtil.generate();
+			// 判断用户此时使用的是邮箱还是手机号码
+			if (userCode.indexOf("@") > -1) {
+				// 此时使用的是邮箱地址
+				// 发送邮件
+				String context = "<div style='width: 600px; margin: 0 auto;'>" +
+						"<h3>尊敬的:<strong>"+ userCode +"</h3>" +
+						"<p>您已经成功注册成为<strong>爱旅行</strong>会员！</p>" +
+						"<p>只剩下最后一步，激活您的账号，您的激活码是:<strong style='color: red;'>" + reCDK + "</strong></p>" +
+						"<p>请在<strong>" + ConstantUtils.MAIL_EXPIRE + "</strong>分钟之内进行账号激活！</p></div>";
+				emailUtil.sendMail(userCode, "爱旅行用户激活", context);
+			} else {
+				// 使用的是手机号码
+				smsUtil.sendActivationCodeCloopen(userCode, reCDK);
+			}
+			// 将激活码存储于 Redis 中，使用 userCode 作为 key
+			redisUtil.saveToRedis(userCode, reCDK, ConstantUtils.MAIL_EXPIRE);
+			System.out.println(reCDK);
+			return ResultVO.failure("验证码已过期，请注意查收新的验证码");
 		}
-		return false;
 	}
 
 	/**
@@ -168,5 +189,16 @@ public class UserServiceImpl implements UserService {
 			// 登陆失败
 			return ResultVO.failure("请填写正确的登陆账号及密码");
 		}
+	}
+
+	/**
+	 * <b>退出登陆</b>
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public ResultVO logoutUser(String token) throws Exception {
+		redisUtil.deleteFromRedis(token);
+		return ResultVO.success();
 	}
 }

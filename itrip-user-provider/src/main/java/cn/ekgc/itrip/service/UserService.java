@@ -34,7 +34,7 @@ public interface UserService {
 	 * @return
 	 * @throws Exception
 	 */
-	boolean activateUser(String userCode, String code) throws Exception;
+	ResultVO activateUser(String userCode, String code) throws Exception;
 
 	/**
 	 * <b>使用 token 查找当前登陆用户</b>
@@ -52,4 +52,11 @@ public interface UserService {
 	 * @throws Exception
 	 */
 	ResultVO loginUser(String userCode, String password) throws Exception;
+
+	/**
+	 * <b>退出登陆</b>
+	 * @return
+	 * @throws Exception
+	 */
+	ResultVO logoutUser(String token) throws Exception;
 }
