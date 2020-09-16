@@ -150,4 +150,35 @@ public class AuthController extends BaseController {
 		}
 		return ResultVO.failure("请填写正确的激活信息");
 	}
+
+	/**
+	 * <b>用户登陆</b>
+	 * @param name
+	 * @param password
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/dologin")
+	public ResultVO userLogin(String name, String password) throws Exception {
+		// 检验数据有效性
+		if ((ValidateUtil.checkCellphone(name) || ValidateUtil.checkEmail(name))
+				&& ValidateUtil.checkPassword(password)) {
+			// 信息有效
+			User user = userTransport.queryUserForLogin(name, password);
+			if (user != null) {
+				// 登陆成功，检查用户是否处于激活状态
+				if (user.getActivated() == ActivatedEnum.ACTIVATED_TRUE.getCode()) {
+					return ResultVO.success();
+				} else {
+					// 未激活
+					return ResultVO.failure("请激活后在登陆");
+				}
+			} else {
+				// 登陆失败
+				return ResultVO.failure("请填写正确的登陆账号及密码");
+			}
+		}
+		// 信息无效
+		return ResultVO.failure("请填写有效的登陆信息");
+	}
 }

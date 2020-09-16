@@ -54,4 +54,17 @@ public class UserTransportImpl implements UserTransport {
 	public boolean activateUser(@RequestParam String userCode, @RequestParam String code) throws Exception {
 		return userService.activateUser(userCode, code);
 	}
+
+	/**
+	 * <b>用户登陆</b>
+	 * @param userCode
+	 * @param password
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/dologin")
+	@Override
+	public User queryUserForLogin(@RequestParam String userCode, @RequestParam String password) throws Exception {
+		return userService.queryUserForLogin(userCode, password);
+	}
 }

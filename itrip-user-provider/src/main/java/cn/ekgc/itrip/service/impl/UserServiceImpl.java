@@ -4,10 +4,7 @@ import cn.ekgc.itrip.dao.UserDao;
 import cn.ekgc.itrip.pojo.entity.User;
 import cn.ekgc.itrip.pojo.enums.ActivatedEnum;
 import cn.ekgc.itrip.service.UserService;
-import cn.ekgc.itrip.util.CDKUtil;
-import cn.ekgc.itrip.util.ConstantUtils;
-import cn.ekgc.itrip.util.EmailUtil;
-import cn.ekgc.itrip.util.SmsUtil;
+import cn.ekgc.itrip.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -116,5 +113,24 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * <b>用户登陆</b>
+	 * @param userCode
+	 * @param password
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public User queryUserForLogin(String userCode, String password) throws Exception {
+		User query = new User();
+		query.setUserCode(userCode);
+		query.setUserPassword(MD5Util.encrypt(password));
+		List<User> list = userDao.findListByQuery(query);
+		if (list != null && list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
 	}
 }
