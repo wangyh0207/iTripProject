@@ -1,5 +1,6 @@
 package cn.ekgc.itrip.service.impl;
 
+import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.dao.UserDao;
 import cn.ekgc.itrip.pojo.entity.User;
 import cn.ekgc.itrip.pojo.enums.ActivatedEnum;
@@ -10,7 +11,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 	@Autowired
-	private StringRedisTemplate redisTemplate;
+	private RedisUtil redisUtil;
 	@Autowired
 	private EmailUtil emailUtil;
 	@Autowired
@@ -63,10 +66,6 @@ public class UserServiceImpl implements UserService {
 		if (count > 0) {
 			// 产生随机激活码
 			String cdk = CDKUtil.generate();
-			// 将激活码存储于 Redis 中，使用 userCode 作为 key
-			redisTemplate.opsForValue().set(user.getUserCode(), cdk);
-			// 设定过期时间
-			redisTemplate.expire(user.getUserCode(), 5, TimeUnit.MINUTES);
 			// 判断用户此时使用的是邮箱还是手机号码
 			if (user.getUserCode().indexOf("@") > -1) {
 				// 此时使用的是邮箱地址
@@ -81,6 +80,8 @@ public class UserServiceImpl implements UserService {
 				// 使用的是手机号码
 				smsUtil.sendActivationCodeCloopen(user.getUserCode(), cdk);
 			}
+			// 将激活码存储于 Redis 中，使用 userCode 作为 key
+			redisUtil.saveToRedis(user.getUserCode(), cdk, ConstantUtils.MAIL_EXPIRE);
 			// 将激活码发送到邮箱
 			System.out.println(cdk);
 			return true;
@@ -99,7 +100,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean activateUser(String userCode, String code) throws Exception {
 		// 通过使用 userCode 作为 key 从 redis 中查询用户信息
-		String cdk = redisTemplate.opsForValue().get(userCode);
+		String cdk = (String) redisUtil.getFromRedis(userCode, String.class);
 		if (cdk != null) {
 			// 找到对应的激活码，和用户提交的信息进行比较
 			if (cdk.equals(code)) {
@@ -117,21 +118,55 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * <b>用户登陆</b>
+	 * <b>使用 token 查找当前登陆用户</b>
+	 * @param token
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public User getUserByToken(String token) throws Exception {
+		// 通过 redis 进行查询
+		User user = (User) redisUtil.getFromRedis(token, User.class);
+		if (user != null) {
+			return user;
+		}
+		return null;
+	}
+
+	/**
+	 * <b>使用 userCode 和 password 进行登陆</b>
 	 * @param userCode
 	 * @param password
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
-	public User queryUserForLogin(String userCode, String password) throws Exception {
+	public ResultVO loginUser(String userCode, String password) throws Exception {
 		User query = new User();
 		query.setUserCode(userCode);
 		query.setUserPassword(MD5Util.encrypt(password));
 		List<User> list = userDao.findListByQuery(query);
-		if (list != null && list.size() > 0) {
-			return list.get(0);
+		if (list != null && !list.isEmpty()) {
+			User user = list.get(0);
+			// 登陆成功，检查用户是否处于激活状态
+			if (user.getActivated() == ActivatedEnum.ACTIVATED_TRUE.getCode()) {
+				// 设定用户登陆有效期
+				Map<String, Object> resultMap = new HashMap<String, Object>();
+				// 设置 token，使用 MD5 对用户的 userCode 进行加密，并且全部变为大写
+				String token = MD5Util.encrypt(user.getUserCode()).toUpperCase();
+				// 将 token 作为 key 存储于 redis
+				redisUtil.saveToRedis(token, user, ConstantUtils.LOGIN_EXPIRE);
+				resultMap.put("token", token);
+				// 设置过期时间
+				resultMap.put("expTime", ConstantUtils.LOGIN_EXPIRE);
+				return ResultVO.success(resultMap);
+			} else {
+				// 未激活
+				return ResultVO.failure("请激活后在登陆");
+			}
+		} else {
+			// 登陆失败
+			return ResultVO.failure("请填写正确的登陆账号及密码");
 		}
-		return null;
 	}
 }

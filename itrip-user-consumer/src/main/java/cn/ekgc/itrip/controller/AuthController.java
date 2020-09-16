@@ -164,19 +164,7 @@ public class AuthController extends BaseController {
 		if ((ValidateUtil.checkCellphone(name) || ValidateUtil.checkEmail(name))
 				&& ValidateUtil.checkPassword(password)) {
 			// 信息有效
-			User user = userTransport.queryUserForLogin(name, password);
-			if (user != null) {
-				// 登陆成功，检查用户是否处于激活状态
-				if (user.getActivated() == ActivatedEnum.ACTIVATED_TRUE.getCode()) {
-					return ResultVO.success();
-				} else {
-					// 未激活
-					return ResultVO.failure("请激活后在登陆");
-				}
-			} else {
-				// 登陆失败
-				return ResultVO.failure("请填写正确的登陆账号及密码");
-			}
+			return userTransport.loginUser(name, password);
 		}
 		// 信息无效
 		return ResultVO.failure("请填写有效的登陆信息");

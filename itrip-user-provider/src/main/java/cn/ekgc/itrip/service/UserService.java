@@ -1,5 +1,6 @@
 package cn.ekgc.itrip.service;
 
+import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.pojo.entity.User;
 
 /**
@@ -36,11 +37,19 @@ public interface UserService {
 	boolean activateUser(String userCode, String code) throws Exception;
 
 	/**
-	 * <b>用户登陆</b>
+	 * <b>使用 token 查找当前登陆用户</b>
+	 * @param token
+	 * @return
+	 * @throws Exception
+	 */
+	User getUserByToken(String token) throws Exception;
+
+	/**
+	 * <b>使用 userCode 和 password 进行登陆</b>
 	 * @param userCode
 	 * @param password
 	 * @return
 	 * @throws Exception
 	 */
-	User queryUserForLogin(String userCode, String password) throws Exception;
+	ResultVO loginUser(String userCode, String password) throws Exception;
 }

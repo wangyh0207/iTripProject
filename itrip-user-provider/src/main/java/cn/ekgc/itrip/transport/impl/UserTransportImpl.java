@@ -1,5 +1,6 @@
 package cn.ekgc.itrip.transport.impl;
 
+import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.pojo.entity.User;
 import cn.ekgc.itrip.service.UserService;
 import cn.ekgc.itrip.transport.user.UserTransport;
@@ -57,15 +58,27 @@ public class UserTransportImpl implements UserTransport {
 	}
 
 	/**
-	 * <b>用户登陆</b>
+	 * <b>使用 token 查找当前登陆用户</b>
+	 * @param token
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/token")
+	@Override
+	public User getUserByToken(@RequestParam String token) throws Exception {
+		return userService.getUserByToken(token);
+	}
+
+	/**
+	 * <b>使用 userCode 和 password 进行登陆</b>
 	 * @param userCode
 	 * @param password
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping("/dologin")
+	@PostMapping("/login")
 	@Override
-	public User queryUserForLogin(@RequestParam String userCode, @RequestParam String password) throws Exception {
-		return userService.queryUserForLogin(userCode, password);
+	public ResultVO loginUser(@RequestParam String userCode, @RequestParam String password) throws Exception {
+		return userService.loginUser(userCode, password);
 	}
 }
