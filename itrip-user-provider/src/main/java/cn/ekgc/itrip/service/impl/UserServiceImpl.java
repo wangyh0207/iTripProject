@@ -4,6 +4,7 @@ import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.dao.UserDao;
 import cn.ekgc.itrip.pojo.entity.User;
 import cn.ekgc.itrip.pojo.enums.ActivatedEnum;
+import cn.ekgc.itrip.pojo.enums.UserTypeEnum;
 import cn.ekgc.itrip.service.UserService;
 import cn.ekgc.itrip.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,25 @@ public class UserServiceImpl implements UserService {
 		// 保存用户信息
 		Integer count = userDao.save(user);
 		if (count > 0) {
+			User query = userDao.findListByQuery(user).get(0);
+			user.setId(query.getId());
+			if (query.getUserType().equals(UserTypeEnum.USER_TYPE_SELF.getCode())) {
+				// 自助注册，flatId 为用户主键
+				user.setFlatID(query.getId());
+				userDao.update(user);
+			} else if (query.getUserType().equals(UserTypeEnum.USER_TYPE_WECHAT.getCode())) {
+				// 微信注册，flatId 为微信ID
+				user.setFlatID(Long.parseLong(query.getWeChat()));
+				userDao.update(user);
+			} else if (query.getUserType().equals(UserTypeEnum.USER_TYPE_QQ.getCode())) {
+				// QQ 注册，flatId 为 QQID
+				user.setFlatID(Long.parseLong(query.getQQ()));
+				userDao.update(user);
+			} else if (query.getUserType().equals(UserTypeEnum.USER_TYPE_WEIBO.getCode())) {
+				// 微博注册，flatId 为微博 ID
+				user.setFlatID(Long.parseLong(query.getWeibo()));
+				userDao.update(user);
+			}
 			// 产生随机激活码
 			String cdk = CDKUtil.generate();
 			// 判断用户此时使用的是邮箱还是手机号码
