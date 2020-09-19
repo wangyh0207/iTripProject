@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.ekgc.itrip.dao.LabelDicDao">
+	<select id="findListByQuery" parameterType="LabelDic" resultMap="labelDicMap">
+		select
+			l.id,
+			l.name,
+			l.value,
+			l.description,
+			l.parentId,
+			p.name parentName,
+			l.pic,
+			l.creationDate,
+			l.createdBy,
+			l.modifyDate,
+			l.modifiedBy
+		from itrip_label_dic l left join itrip_label_dic p on l.parentId=p.id
+		<where>
+			<trim suffixOverrides="and">
+				<if test="id != null">l.id=#{id} and </if>
+				<if test="name != null">l.name like concat('%', #{name}, '%') and </if>
+				<if test="parent != null">l.parentId=#{parent.id} and </if>
+			</trim>
+		</where>
+	</select>
+
+	<resultMap id="labelDicMap" type="LabelDic">
+		<id property="id" javaType="java.lang.Long" column="id"/>
+		<result property="name" javaType="java.lang.String" column="name"/>
+		<result property="value" javaType="java.lang.String" column="value"/>
+		<result property="description" javaType="java.lang.String" column="description"/>
+		<result property="pic" javaType="java.lang.String" column="pic"/>
+		<result property="creationDate" javaType="java.util.Date" column="creationDate"/>
+		<result property="createdBy" javaType="java.lang.Long" column="createdBy"/>
+		<result property="modifyDate" javaType="java.util.Date" column="modifyDate"/>
+		<result property="modifiedBy" javaType="java.lang.Long" column="modifiedBy"/>
+		<association property="parent" javaType="LabelDic">
+			<id property="id" javaType="java.lang.Long" column="parentId"/>
+			<result property="name" javaType="java.lang.String" column="parentName"/>
+		</association>
+	</resultMap>
+</mapper>

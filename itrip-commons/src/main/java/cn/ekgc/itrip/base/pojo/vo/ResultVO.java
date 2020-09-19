@@ -11,8 +11,8 @@ import java.io.Serializable;
  */
 public class ResultVO<E> implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String  success;              // 判断系统是否出错做出相应的true或者false的返回，与业务无关，出现的各种异常
-	private String  errorCode;            // 该错误码为自定义，一般0表示无错
+	private String success;              // 判断系统是否出错做出相应的true或者false的返回，与业务无关，出现的各种异常
+	private String errorCode;            // 该错误码为自定义，一般0表示无错
 	private String msg;                   // 对应的提示信息
 	private E data;                       // 具体返回数据内容(pojo、自定义VO、其他)
 
@@ -93,6 +93,20 @@ public class ResultVO<E> implements Serializable {
 		ResultVO resultVO = new ResultVO();
 		resultVO.setSuccess("false");
 		resultVO.setMsg(msg);
+		return resultVO;
+	}
+
+	/**
+	 * <b>获得系统响应失败视图</b>
+	 * @param msg
+	 * @param errorCode
+	 * @return
+	 */
+	public static ResultVO failure(String msg, String errorCode) {
+		ResultVO resultVO = new ResultVO();
+		resultVO.setSuccess("false");
+		resultVO.setMsg(msg);
+		resultVO.setErrorCode(errorCode);
 		return resultVO;
 	}
 }
