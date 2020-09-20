@@ -2,9 +2,6 @@ package cn.ekgc.itrip.service;
 
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.pojo.entity.LinkUser;
-import cn.ekgc.itrip.pojo.vo.AddLinkUserVO;
-
-import java.util.List;
 
 /**
  * <b>爱旅行-联系人业务层接口</b>

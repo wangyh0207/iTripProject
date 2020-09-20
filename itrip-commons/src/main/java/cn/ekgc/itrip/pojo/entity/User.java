@@ -2,9 +2,6 @@ package cn.ekgc.itrip.pojo.entity;
 
 import cn.ekgc.itrip.base.pojo.entity.BaseEntity;
 
-import java.io.Serializable;
-import java.util.Date;
-
 /**
  * <b>爱旅行-用户模块实体信息</b>
  * @author wyh

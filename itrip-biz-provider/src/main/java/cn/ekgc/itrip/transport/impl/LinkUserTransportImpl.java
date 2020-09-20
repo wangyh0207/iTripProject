@@ -3,13 +3,10 @@ package cn.ekgc.itrip.transport.impl;
 
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.pojo.entity.LinkUser;
-import cn.ekgc.itrip.pojo.vo.AddLinkUserVO;
 import cn.ekgc.itrip.service.LinkUserService;
 import cn.ekgc.itrip.transport.biz.LinkUserTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * <b>爱旅行-联系人模块传输层接口实现类</b>

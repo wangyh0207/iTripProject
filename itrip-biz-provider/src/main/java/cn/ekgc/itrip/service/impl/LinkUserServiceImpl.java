@@ -4,17 +4,14 @@ import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.dao.LinkUserDao;
 import cn.ekgc.itrip.pojo.entity.LinkUser;
 import cn.ekgc.itrip.pojo.entity.User;
-import cn.ekgc.itrip.pojo.enums.OrderStatusEnum;
 import cn.ekgc.itrip.service.LinkUserService;
 import cn.ekgc.itrip.util.ConstantUtils;
 import cn.ekgc.itrip.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.awt.image.ImageWatched;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**

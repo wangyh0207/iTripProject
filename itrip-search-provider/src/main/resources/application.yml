@@ -1,0 +1,9 @@
+### 启动端口号
+server:
+  port: 39999
+### 设定应用名
+spring:
+  application:
+    name: itrip-search-provider
+  profiles:
+    active: eureka-client, mail, solr
