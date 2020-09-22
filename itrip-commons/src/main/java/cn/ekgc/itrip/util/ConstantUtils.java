@@ -76,6 +76,16 @@ public class ConstantUtils {
 	public static final String SYSTEM_DELETE_FALSE_LINK = props.getProperty("system.delete.false.link");
 
 	/**
+	 * <b>获取酒店视频文字描述失败错误码</b>
+	 */
+	public static final String SYSTEM_HOTEL_VIDEO_FALSE = props.getProperty("system.hotel.video.false");
+
+	/**
+	 * <b>酒店 ID 为空错误码</b>
+	 */
+	public static final String SYSTEM_HOTEL_ID_NULL = props.getProperty("system.hotel.id.null");
+
+	/**
 	 * <b>容联云配置信息</b>
 	 */
 	public static final String CLOOPEN_SERVER_IP = props.getProperty("cloopen.server.ip");

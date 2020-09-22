@@ -20,6 +20,15 @@ public class Area extends BaseEntity {
 	private Integer level;
 	private Integer isChina;
 	private String pinyin;
+	private Long hotelId;
+
+	public Long getHotelId() {
+		return hotelId;
+	}
+
+	public void setHotelId(Long hotelId) {
+		this.hotelId = hotelId;
+	}
 
 	public Long getId() {
 		return id;

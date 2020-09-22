@@ -16,11 +16,13 @@
 			l.modifyDate,
 			l.modifiedBy
 		from itrip_label_dic l left join itrip_label_dic p on l.parentId=p.id
+			 left join itrip_hotel_feature ihf on l.id=ihf.featureId
 		<where>
 			<trim suffixOverrides="and">
 				<if test="id != null">l.id=#{id} and </if>
 				<if test="name != null">l.name like concat('%', #{name}, '%') and </if>
 				<if test="parent != null">l.parentId=#{parent.id} and </if>
+				<if test="hotelId != null">ihf.hotelId=#{hotelId} and </if>
 			</trim>
 		</where>
 	</select>

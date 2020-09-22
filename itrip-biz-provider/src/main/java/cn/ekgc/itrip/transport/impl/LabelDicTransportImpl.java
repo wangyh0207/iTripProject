@@ -4,10 +4,7 @@ import cn.ekgc.itrip.pojo.entity.LabelDic;
 import cn.ekgc.itrip.service.LabelDicService;
 import cn.ekgc.itrip.transport.biz.LabelDicTransport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

@@ -16,6 +16,15 @@ public class LabelDic extends BaseEntity {
 	private String description;
 	private LabelDic parent;
 	private String pic;
+	private Long hotelId;
+
+	public Long getHotelId() {
+		return hotelId;
+	}
+
+	public void setHotelId(Long hotelId) {
+		this.hotelId = hotelId;
+	}
 
 	public Long getId() {
 		return id;
