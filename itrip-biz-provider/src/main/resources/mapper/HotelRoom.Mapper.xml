@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.ekgc.itrip.dao.HotelRoomDao">
+	<select id="findListByQuery" parameterType="HotelRoom" resultType="HotelRoom">
+		select
+			ihr.id,
+			ihr.hotelId,
+			ihr.roomTitle,
+			ihr.roomPrice,
+			ihr.roomBedTypeId,
+			ild.name,
+			ihr.isHavingBreakfast,
+			ihr.payType,
+			ihr.satisfaction,
+			ihr.isBook,
+			ihr.isCancel,
+			ihr.isTimelyResponse,
+			ihr.creationDate,
+			ihr.createdBy,
+			ihr.modifyDate,
+			ihr.modifiedBy
+		from itrip_hotel_room ihr join itrip_label_dic ild on ihr.roomBedTypeId=ild.id
+		<where>
+			<trim suffixOverrides="and">
+				<if test="id != null">ihr.id=#{id} and </if>
+				<if test="hotelId != null">ihr.hotelId=#{hotelId} and </if>
+				<if test="roomBedTypeId != null">ihr.roomBedTypeId=#{roomBedTypeId} and </if>
+			</trim>
+		</where>
+	</select>
+</mapper>
