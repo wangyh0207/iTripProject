@@ -4,19 +4,19 @@ import cn.ekgc.itrip.base.controller.BaseController;
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.pojo.entity.Area;
 import cn.ekgc.itrip.pojo.entity.Hotel;
+import cn.ekgc.itrip.pojo.entity.Image;
 import cn.ekgc.itrip.pojo.entity.LabelDic;
 import cn.ekgc.itrip.pojo.enums.HotEnum;
 import cn.ekgc.itrip.pojo.vo.HotelDescVO;
 import cn.ekgc.itrip.pojo.vo.HotelDetailsVO;
+import cn.ekgc.itrip.pojo.vo.ImageVO;
 import cn.ekgc.itrip.transport.biz.AreaTransport;
 import cn.ekgc.itrip.transport.biz.HotelTransport;
+import cn.ekgc.itrip.transport.biz.ImageTransport;
 import cn.ekgc.itrip.transport.biz.LabelDicTransport;
-import cn.ekgc.itrip.util.ConstantUtils;
-import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.GET;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +35,8 @@ public class HotelController extends BaseController {
 	private LabelDicTransport labelDicTransport;
 	@Autowired
 	private HotelTransport hotelTransport;
+	@Autowired
+	private ImageTransport imageTransport;
 
 	/**
 	 * <b>根据是否是国内信息查询热门城市</b>
@@ -159,5 +161,13 @@ public class HotelController extends BaseController {
 	public ResultVO queryHotelPolicy(@PathVariable("id") Long id) throws Exception {
 		Hotel hotel = hotelTransport.getHotelById(id);
 		return ResultVO.success(hotel.getHotelPolicy());
+	}
+
+	@GetMapping("/getimg/{targetId}")
+	public ResultVO getImg(@PathVariable("targetId") Long targetId) throws Exception {
+		Image image = new Image();
+		image.setTargetId(targetId);
+		List<ImageVO> list = imageTransport.getImageListByQuery(image);
+		return ResultVO.success(list);
 	}
 }

@@ -3,6 +3,7 @@ package cn.ekgc.itrip.transport.impl;
 
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.pojo.entity.LinkUser;
+import cn.ekgc.itrip.pojo.vo.ValidateRoomStoreVO;
 import cn.ekgc.itrip.service.LinkUserService;
 import cn.ekgc.itrip.transport.biz.LinkUserTransport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class LinkUserTransportImpl implements LinkUserTransport {
 	 * @throws Exception
 	 */
 	@PostMapping("/query")
+	@Override
 	public boolean getLinkUserByQuery(@RequestBody LinkUser query) throws Exception {
 		return linkUserService.getLinkUserByQuery(query);
 	}
@@ -51,6 +53,7 @@ public class LinkUserTransportImpl implements LinkUserTransport {
 	 * @return
 	 */
 	@PostMapping("/adduserlinkuser")
+	@Override
 	public ResultVO addUserLinkUser(@RequestBody LinkUser linkUser, @RequestParam String token) throws Exception {
 		return linkUserService.addUserLinkUser(linkUser, token);
 	}
@@ -63,6 +66,7 @@ public class LinkUserTransportImpl implements LinkUserTransport {
 	 * @throws Exception
 	 */
 	@PostMapping("/modifyuserlinkuser")
+	@Override
 	public ResultVO updateLinkUser(@RequestBody LinkUser linkUser, @RequestParam String token) throws Exception {
 		return linkUserService.updateLinkUser(linkUser, token);
 	}
@@ -74,7 +78,20 @@ public class LinkUserTransportImpl implements LinkUserTransport {
 	 * @throws Exception
 	 */
 	@PostMapping("/deluserlinkuser")
+	@Override
 	public ResultVO delUserLinkUser(@RequestParam long[] args) throws Exception {
 		return linkUserService.delUserLinkUser(args);
+	}
+
+	/**
+	 * <b>根据订单信息查询联系人</b>
+	 * @param validateRoomStoreVO
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/querybyorder")
+	@Override
+	public ResultVO getListByOrder(@RequestBody ValidateRoomStoreVO validateRoomStoreVO) throws Exception {
+		return linkUserService.getListByOrder(validateRoomStoreVO);
 	}
 }

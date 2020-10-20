@@ -1,6 +1,7 @@
 package cn.ekgc.itrip.dao;
 
 import cn.ekgc.itrip.pojo.entity.Comment;
+import cn.ekgc.itrip.pojo.vo.ItripAddCommentVO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,4 +22,12 @@ public interface CommentDao {
 	 * @throws Exception
 	 */
 	List<Comment> findListByQuery(Comment query) throws Exception;
+
+	/**
+	 * <b>新增评论</b>
+	 * @param comment
+	 * @return
+	 * @throws Exception
+	 */
+	Integer save(Comment comment) throws Exception;
 }

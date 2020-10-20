@@ -1,9 +1,15 @@
 package cn.ekgc.itrip.service.impl;
 
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
+import cn.ekgc.itrip.dao.HotelOrderDao;
 import cn.ekgc.itrip.dao.LinkUserDao;
+import cn.ekgc.itrip.dao.OrderLinkUserDao;
+import cn.ekgc.itrip.pojo.entity.HotelOrder;
 import cn.ekgc.itrip.pojo.entity.LinkUser;
+import cn.ekgc.itrip.pojo.entity.OrderLinkUser;
 import cn.ekgc.itrip.pojo.entity.User;
+import cn.ekgc.itrip.pojo.vo.ItripOrderLinkUserVo;
+import cn.ekgc.itrip.pojo.vo.ValidateRoomStoreVO;
 import cn.ekgc.itrip.service.LinkUserService;
 import cn.ekgc.itrip.util.ConstantUtils;
 import cn.ekgc.itrip.util.RedisUtil;
@@ -11,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +34,10 @@ public class LinkUserServiceImpl implements LinkUserService {
 	private LinkUserDao linkUserDao;
 	@Autowired
 	private RedisUtil redisUtil;
+	@Autowired
+	private HotelOrderDao hotelOrderDao;
+	@Autowired
+	private OrderLinkUserDao orderLinkUserDao;
 
 	/**
 	 * <b>查询常用联系人</b>
@@ -210,5 +221,36 @@ public class LinkUserServiceImpl implements LinkUserService {
 			}
 		}
 		return ResultVO.success();
+	}
+
+	/**
+	 * <b>根据订单信息查询联系人</b>
+	 * @param validateRoomStoreVO
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public ResultVO getListByOrder(ValidateRoomStoreVO validateRoomStoreVO) throws Exception {
+		HotelOrder hotelOrder = new HotelOrder();
+		hotelOrder.setHotelId(validateRoomStoreVO.getHotelId());
+		hotelOrder.setRoomId(validateRoomStoreVO.getRoomId());
+		hotelOrder.setCheckInDate(validateRoomStoreVO.getCheckInDate());
+		hotelOrder.setCheckOutDate(validateRoomStoreVO.getCheckOutDate());
+		List<HotelOrder> hotelOrderList = hotelOrderDao.findListByQuery(hotelOrder);
+		if (hotelOrderList != null) {
+			Long orderId = hotelOrderList.get(0).getId();
+			OrderLinkUser query = new OrderLinkUser();
+			query.setOrderId(orderId);
+			List<OrderLinkUser> list = orderLinkUserDao.findListByQuery(query);
+			List<ItripOrderLinkUserVo> linkUserVoList = new ArrayList<ItripOrderLinkUserVo>();
+			for (OrderLinkUser orderLinkUser : list) {
+				ItripOrderLinkUserVo linkUserVo = new ItripOrderLinkUserVo();
+				linkUserVo.setLinkUserId(orderLinkUser.getLinkUserId());
+				linkUserVo.setLinkUserName(orderLinkUser.getLinkUserName());
+				linkUserVoList.add(linkUserVo);
+			}
+			return ResultVO.success(linkUserVoList);
+		}
+		return ResultVO.failure("订单信息不存在", "100401");
 	}
 }

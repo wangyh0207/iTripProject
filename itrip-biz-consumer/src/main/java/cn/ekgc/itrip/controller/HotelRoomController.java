@@ -2,7 +2,6 @@ package cn.ekgc.itrip.controller;
 
 import cn.ekgc.itrip.base.controller.BaseController;
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
-import cn.ekgc.itrip.pojo.entity.Hotel;
 import cn.ekgc.itrip.pojo.entity.HotelRoom;
 import cn.ekgc.itrip.pojo.entity.Image;
 import cn.ekgc.itrip.pojo.entity.LabelDic;
@@ -48,6 +47,7 @@ public class HotelRoomController extends BaseController {
 			HotelRoom query = new HotelRoom();
 			query.setHotelId(searchHotelRoomVO.getHotelId());
 			query.setRoomBedTypeId(searchHotelRoomVO.getRoomBedTypeId());
+			query.setPayType(searchHotelRoomVO.getPayType());
 			List<List<HotelRoom>> list = new ArrayList<List<HotelRoom>>();
 			List<HotelRoom> hotelRoomList = hotelRoomTransport.getListByQuery(query);
 			// 将每个房间都独立存储成一个集合

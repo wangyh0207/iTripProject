@@ -5,7 +5,9 @@
 	<select id="findListByQuery" parameterType="Comment" resultMap="resultMap">
 		select
 			ic.id,
+			ic.hotelId,
 			ic.orderId,
+			ic.productId,
 			ic.productType,
 			ic.content,
 			ic.userId,
@@ -27,6 +29,54 @@
 			</trim>
 		</where>
 	</select>
+
+	<insert id="save" parameterType="Comment">
+		insert into itrip_comment(
+			<trim suffixOverrides=",">
+				<if test="id != null">id, </if>
+				<if test="hotelId != null">hotelId, </if>
+				<if test="orderId != null">orderId, </if>
+				<if test="productId != null">productId, </if>
+				<if test="productType != null">productType, </if>
+				<if test="content != null">content, </if>
+				<if test="userId != null">userId, </if>
+				<if test="isHavingImg != null">isHavingImg, </if>
+				<if test="positionScore != null">positionScore, </if>
+				<if test="facilitiesScore != null">facilitiesScore, </if>
+				<if test="serviceScore != null">serviceScore, </if>
+				<if test="hygieneScore != null">hygieneScore, </if>
+				<if test="score != null">score, </if>
+				<if test="tripMode != null">tripMode, </if>
+				<if test="isOk != null">isOk, </if>
+				<if test="creationDate != null">creationDate, </if>
+				<if test="createdBy != null">createdBy, </if>
+				<if test="modifyDate != null">modifyDate, </if>
+				<if test="modifiedBy != null">modifiedBy, </if>
+			</trim>
+		) values(
+			<trim suffixOverrides=",">
+				<if test="id != null">#{id}, </if>
+				<if test="hotelId != null">#{hotelId}, </if>
+				<if test="orderId != null">#{orderId}, </if>
+				<if test="productId != null">#{productId}, </if>
+				<if test="productType != null">#{productType}, </if>
+				<if test="content != null">#{content}, </if>
+				<if test="userId != null">#{userId}, </if>
+				<if test="isHavingImg != null">#{isHavingImg}, </if>
+				<if test="positionScore != null">#{positionScore}, </if>
+				<if test="facilitiesScore != null">#{facilitiesScore}, </if>
+				<if test="serviceScore != null">#{serviceScore}, </if>
+				<if test="hygieneScore != null">#{hygieneScore}, </if>
+				<if test="score != null">#{score}, </if>
+				<if test="tripMode != null">#{tripMode}, </if>
+				<if test="isOk != null">#{isOk}, </if>
+				<if test="creationDate != null">#{creationDate}, </if>
+				<if test="createdBy != null">#{createdBy}, </if>
+				<if test="modifyDate != null">#{modifyDate}, </if>
+				<if test="modifiedBy != null">#{modifiedBy}, </if>
+			</trim>
+		)
+	</insert>
 
 	<resultMap id="resultMap" type="Comment">
 		<id property="id" javaType="java.lang.Long" column="id"/>

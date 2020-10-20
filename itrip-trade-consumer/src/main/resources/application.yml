@@ -1,0 +1,9 @@
+### 项目启动端口号
+server:
+  port: 8888
+### 项目应用名
+spring:
+  application:
+    name: itrip-trade-consumer
+  profiles:
+    active: eureka-client, mail

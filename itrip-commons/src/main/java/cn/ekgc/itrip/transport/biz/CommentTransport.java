@@ -4,6 +4,8 @@ import cn.ekgc.itrip.pojo.vo.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.POST;
+
 /**
  * <b>爱旅行-评论模块传输层接口</b>
  * @author wyh
@@ -39,4 +41,12 @@ public interface CommentTransport {
 	 */
 	@PostMapping("/getcommentlist")
 	Page getCommentList(@RequestBody SearchCommentVO searchCommentVO) throws Exception;
+
+	/**
+	 * <b>新增评论</b>
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/add")
+	boolean add(@RequestBody ItripAddCommentVO addCommentVO, @RequestParam String token) throws Exception;
 }

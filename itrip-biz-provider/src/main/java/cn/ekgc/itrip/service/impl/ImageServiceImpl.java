@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("imageService")
@@ -24,6 +25,14 @@ public class ImageServiceImpl implements ImageService {
 	 */
 	@Override
 	public List<ImageVO> getImageListByQuery(Image query) throws Exception {
-		return imageDao.findListByQuery(query);
+		List<Image> imageList = imageDao.findListByQuery(query);
+		List<ImageVO> list = new ArrayList<ImageVO>();
+		for (Image image: imageList) {
+			ImageVO imageVO = new ImageVO();
+			imageVO.setImgUrl(image.getImgUrl());
+			imageVO.setPosition(image.getPosition());
+			list.add(imageVO);
+		}
+		return list;
 	}
 }

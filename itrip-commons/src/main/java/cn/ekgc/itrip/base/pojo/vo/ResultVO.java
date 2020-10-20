@@ -109,4 +109,13 @@ public class ResultVO<E> implements Serializable {
 		resultVO.setErrorCode(errorCode);
 		return resultVO;
 	}
+
+	public static ResultVO failure(String msg, String errorCode, Object data) {
+		ResultVO resultVO = new ResultVO();
+		resultVO.setSuccess("false");
+		resultVO.setMsg(msg);
+		resultVO.setErrorCode(errorCode);
+		resultVO.setData(data);
+		return resultVO;
+	}
 }

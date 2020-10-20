@@ -6,6 +6,7 @@ import cn.ekgc.itrip.pojo.entity.LinkUser;
 import cn.ekgc.itrip.pojo.vo.AddLinkUserVO;
 import cn.ekgc.itrip.pojo.vo.ModifyLinkUserVO;
 import cn.ekgc.itrip.pojo.vo.SearchUserVO;
+import cn.ekgc.itrip.pojo.vo.ValidateRoomStoreVO;
 import cn.ekgc.itrip.transport.biz.LinkUserTransport;
 import cn.ekgc.itrip.util.ConstantUtils;
 import cn.ekgc.itrip.util.ValidateUtil;
@@ -35,6 +36,9 @@ public class LinkUserController extends BaseController {
 	@PostMapping("/queryuserlinkuser")
 	public ResultVO queryUserLinkUser(@RequestBody SearchUserVO searchUserVO) throws Exception {
 		String token = request.getHeader("token");
+		if (searchUserVO.getLinkUserName() == null) {
+			searchUserVO.setLinkUserName("");
+		}
 		return linkUserTransport.getListByQuery(searchUserVO.getLinkUserName(), token);
 	}
 

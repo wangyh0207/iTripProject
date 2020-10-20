@@ -15,11 +15,11 @@ public class HotelRoom extends BaseEntity {
 	private Long id;
 	private Long hotelId;
 	private String roomTitle;
-	private BigDecimal roomPrice;
+	private Double roomPrice;
 	private Long roomBedTypeId;
 	private Integer isHavingBreakfast;
 	private Integer payType;
-	private BigDecimal satisfaction;
+	private Double satisfaction;
 	private Integer isBook;
 	private Integer isCancel;
 	private Integer isTimelyResponse;
@@ -48,11 +48,11 @@ public class HotelRoom extends BaseEntity {
 		this.roomTitle = roomTitle;
 	}
 
-	public BigDecimal getRoomPrice() {
+	public Double getRoomPrice() {
 		return roomPrice;
 	}
 
-	public void setRoomPrice(BigDecimal roomPrice) {
+	public void setRoomPrice(Double roomPrice) {
 		this.roomPrice = roomPrice;
 	}
 
@@ -80,11 +80,11 @@ public class HotelRoom extends BaseEntity {
 		this.payType = payType;
 	}
 
-	public BigDecimal getSatisfaction() {
+	public Double getSatisfaction() {
 		return satisfaction;
 	}
 
-	public void setSatisfaction(BigDecimal satisfaction) {
+	public void setSatisfaction(Double satisfaction) {
 		this.satisfaction = satisfaction;
 	}
 

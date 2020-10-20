@@ -32,4 +32,12 @@ public interface CommentService {
 	 * @throws Exception
 	 */
 	Page getCommentList(SearchCommentVO searchCommentVO) throws Exception;
+
+	/**
+	 * <b>新增评论</b>
+	 * @param addCommentVO
+	 * @return
+	 * @throws Exception
+	 */
+	boolean add(ItripAddCommentVO addCommentVO, String token) throws Exception;
 }

@@ -2,13 +2,23 @@ package cn.ekgc.itrip.controller;
 
 import cn.ekgc.itrip.base.controller.BaseController;
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
+import cn.ekgc.itrip.pojo.entity.Hotel;
 import cn.ekgc.itrip.pojo.entity.Image;
+import cn.ekgc.itrip.pojo.entity.LabelDic;
 import cn.ekgc.itrip.pojo.vo.*;
 import cn.ekgc.itrip.transport.biz.CommentTransport;
+import cn.ekgc.itrip.transport.biz.HotelTransport;
 import cn.ekgc.itrip.transport.biz.ImageTransport;
+import cn.ekgc.itrip.transport.biz.LabelDicTransport;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -24,6 +34,11 @@ public class CommentController extends BaseController {
 	private CommentTransport commentTransport;
 	@Autowired
 	private ImageTransport imageTransport;
+	@Autowired
+	private HotelTransport hotelTransport;
+	@Autowired
+	private LabelDicTransport labelDicTransport;
+
 
 	/**
 	 * <b>据酒店id查询酒店平均分</b>
@@ -75,5 +90,77 @@ public class CommentController extends BaseController {
 		query.setTargetId(targetId);
 		List<ImageVO> list = imageTransport.getImageListByQuery(query);
 		return ResultVO.success(list);
+	}
+
+	/**
+	 * <b>获取酒店相关信息（酒店名称、酒店星级）</b>
+	 * @param hotelId
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/gethoteldesc/{hotelId}")
+	public ResultVO getHotelDesc(@PathVariable("hotelId") Long hotelId) throws Exception {
+		Hotel hotel = hotelTransport.getHotelById(hotelId);
+		ItripHotelDescVO hotelDescVO = new ItripHotelDescVO();
+		hotelDescVO.setHotelId(hotelId);
+		hotelDescVO.setHotelLevel(hotel.getHotelLevel());
+		hotelDescVO.setHotelName(hotel.getHotelName());
+		return ResultVO.success(hotelDescVO);
+	}
+
+	/**
+	 * <b>查询出游类型列表</b>
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/gettraveltype")
+	public ResultVO getTravelType() throws Exception {
+		LabelDic parent = new LabelDic();
+		parent.setId(107L);
+		LabelDic query = new LabelDic();
+		query.setParent(parent);
+		List<LabelDic> list = labelDicTransport.getLabelDicListByQuery(query);
+		return ResultVO.success(list);
+	}
+
+	/**
+	 * <b>上传图片</b>
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/upload")
+	public ResultVO upLoad(@RequestParam("file") MultipartFile file) throws Exception {
+		String fileName = file.getOriginalFilename();
+		String suffix = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+		if (suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png")) {
+			// 对文件进行重命名
+			fileName = System.currentTimeMillis() + suffix;
+			// 保存对象
+			File file1 = new File("/Users/wyh/IdeaProjects/KJ00301/GraduationProject/upload" + File.separator + fileName);
+			// 创建输出流
+			OutputStream out = new FileOutputStream(file1);
+			// 通过 MultipartFile 对象获得文件输入流
+			InputStream in = file.getInputStream();
+			// 将数据写入到输出流
+			IOUtils.copy(in, out);
+			return ResultVO.success(fileName);
+		}
+		return ResultVO.failure("文件格式错误", "100008");
+	}
+
+	/**
+	 * <b>新增评论</b>
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/add")
+	public ResultVO add(@RequestBody ItripAddCommentVO addCommentVO) throws Exception {
+		String token = request.getHeader("token");
+		boolean flag = commentTransport.add(addCommentVO, token);
+		if (flag) {
+			return ResultVO.success();
+		}
+		return ResultVO.failure("新增评论失败", "100003");
 	}
 }

@@ -2,6 +2,7 @@ package cn.ekgc.itrip.service;
 
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.pojo.entity.LinkUser;
+import cn.ekgc.itrip.pojo.vo.ValidateRoomStoreVO;
 
 /**
  * <b>爱旅行-联系人业务层接口</b>
@@ -52,4 +53,12 @@ public interface LinkUserService {
 	 * @throws Exception
 	 */
 	ResultVO delUserLinkUser(long[] args) throws Exception;
+
+	/**
+	 * <b>根据订单信息查询联系人</b>
+	 * @param validateRoomStoreVO
+	 * @return
+	 * @throws Exception
+	 */
+	ResultVO getListByOrder(ValidateRoomStoreVO validateRoomStoreVO) throws Exception;
 }

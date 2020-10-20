@@ -2,6 +2,7 @@ package cn.ekgc.itrip.transport.biz;
 
 import cn.ekgc.itrip.base.pojo.vo.ResultVO;
 import cn.ekgc.itrip.pojo.entity.LinkUser;
+import cn.ekgc.itrip.pojo.vo.ValidateRoomStoreVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,4 +61,13 @@ public interface LinkUserTransport {
 	 */
 	@PostMapping("/deluserlinkuser")
 	ResultVO delUserLinkUser(@RequestParam long[] args) throws Exception;
+
+	/**
+	 * <b>根据订单信息查询联系人</b>
+	 * @param validateRoomStoreVO
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/querybyorder")
+	ResultVO getListByOrder(@RequestBody ValidateRoomStoreVO validateRoomStoreVO) throws Exception;
 }

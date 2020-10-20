@@ -26,6 +26,7 @@
 				<if test="id != null">ihr.id=#{id} and </if>
 				<if test="hotelId != null">ihr.hotelId=#{hotelId} and </if>
 				<if test="roomBedTypeId != null">ihr.roomBedTypeId=#{roomBedTypeId} and </if>
+				<if test="payType != null">ihr.payType=#{payType} and </if>
 			</trim>
 		</where>
 	</select>

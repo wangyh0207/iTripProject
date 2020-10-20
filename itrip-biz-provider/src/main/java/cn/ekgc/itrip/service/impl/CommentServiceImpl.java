@@ -1,9 +1,13 @@
 package cn.ekgc.itrip.service.impl;
 
 import cn.ekgc.itrip.dao.CommentDao;
+import cn.ekgc.itrip.dao.HotelOrderDao;
 import cn.ekgc.itrip.pojo.entity.Comment;
+import cn.ekgc.itrip.pojo.entity.HotelOrder;
+import cn.ekgc.itrip.pojo.entity.User;
 import cn.ekgc.itrip.pojo.vo.*;
 import cn.ekgc.itrip.service.CommentService;
+import cn.ekgc.itrip.util.RedisUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +30,10 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
 	@Autowired
 	private CommentDao commentDao;
+	@Autowired
+	private RedisUtil redisUtil;
+	@Autowired
+	private HotelOrderDao hotelOrderDao;
 
 	/**
 	 * <b>根据酒店主键查询总体评价分数</b>
@@ -157,5 +166,47 @@ public class CommentServiceImpl implements CommentService {
 		page = new Page(searchCommentVO.getPageNo(), searchCommentVO.getPageSize(), total);
 		page.setRows(pageInfo.getList());
 		return page;
+	}
+
+	/**
+	 * <b>新增评论</b>
+	 * @param addCommentVO
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public boolean add(ItripAddCommentVO addCommentVO, String token) throws Exception {
+		// 获得当前登陆用户
+		User user = (User) redisUtil.getFromRedis(token, User.class);
+		if (user != null) {
+			Comment comment = new Comment();
+			comment.setHotelId(addCommentVO.getHotelId());
+			comment.setProductId(addCommentVO.getProductId());
+			comment.setOrderId(addCommentVO.getOrderId());
+			comment.setProductType(addCommentVO.getProductType());
+			comment.setContent(addCommentVO.getContent());
+			comment.setUserId(user.getId());
+			comment.setIsHavingImg(addCommentVO.getIsHavingImg());
+			comment.setPositionScore(addCommentVO.getPositionScore());
+			comment.setFacilitiesScore(addCommentVO.getFacilitiesScore());
+			comment.setServiceScore(addCommentVO.getServiceScore());
+			comment.setHygieneScore(addCommentVO.getHygieneScore());
+			Integer score = (addCommentVO.getPositionScore() + addCommentVO.getFacilitiesScore()
+					+ addCommentVO.getServiceScore() + addCommentVO.getHygieneScore()) / 4;
+			comment.setScore(score);
+			comment.setTripMode(Integer.parseInt(addCommentVO.getTripMode()));
+			comment.setIsOk(addCommentVO.getIsOk());
+			comment.setCreationDate(new Date());
+			comment.setCreatedBy(user.getId());
+			int count = commentDao.save(comment);
+			if (count > 0) {
+				HotelOrder hotelOrder = new HotelOrder();
+				hotelOrder.setId(addCommentVO.getOrderId());
+				hotelOrder.setOrderStatus(4);
+				hotelOrderDao.update(hotelOrder);
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -50,4 +50,15 @@ public class CommentTransportImpl implements CommentTransport {
 	public Page getCommentList(@RequestBody SearchCommentVO searchCommentVO) throws Exception {
 		return commentService.getCommentList(searchCommentVO);
 	}
+
+	/**
+	 * <b>新增评论</b>
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/add")
+	@Override
+	public boolean add(@RequestBody ItripAddCommentVO addCommentVO, @RequestParam String token) throws Exception {
+		return commentService.add(addCommentVO, token);
+	}
 }

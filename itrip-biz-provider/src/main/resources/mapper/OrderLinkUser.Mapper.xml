@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.ekgc.itrip.dao.OrderLinkUserDao">
+	<select id="findListByQuery" parameterType="OrderLinkUser" resultType="OrderLinkUser">
+		SELECT
+			id,
+			orderId,
+			linkUserId,
+			linkUserName,
+			creationDate,
+			createdBy,
+			modifyDate,
+			modifiedBy
+		from itrip_order_link_user
+		<where>
+			<trim suffixOverrides="and">
+				<if test="id != null">id=#{id} and </if>
+				<if test="orderId != null">orderId=#{orderId} and </if>
+				<if test="linkUserId != null">linkUserId=#{linkUserId} and </if>
+				<if test="linkUserName != null">linkUserName=#{linkUserName} and </if>
+			</trim>
+		</where>
+	</select>
+</mapper>

@@ -15,5 +15,5 @@ public interface ImageDao {
 	 * @return
 	 * @throws Exception
 	 */
-	List<ImageVO> findListByQuery(Image query) throws Exception;
+	List<Image> findListByQuery(Image query) throws Exception;
 }
